@@ -4,7 +4,7 @@ import Layout from "../../components/layout/Layout";
 import electricianImg from "../../assets/electrician.jpg"
 import plumber from "../../assets/plumber.jpg"
 import carpenter from "../../assets/wood.jpg"
-import cleaning from "../../assets/HomeCLeaning.jpg"
+import cleaning from "../../assets/HomeCleaning.jpg"
 import packers from "../../assets/moversAndPackers.jpg"
 import pest from "../../assets/pestControl.jpg"
 import homeTutor from "../../assets/HomeTutor.jpg"
