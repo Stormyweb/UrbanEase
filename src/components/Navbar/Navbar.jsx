@@ -7,6 +7,7 @@ import { signOut } from "firebase/auth";
 import { onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../../FirebaseConfig.js";
+import { useNavigate } from "react-router-dom";
 
 export const NavLinks = [
   {
@@ -22,7 +23,7 @@ export const NavLinks = [
   {
     id: 3,
     name: "ABOUT",
-    link: "/AboutPage",
+    link: "/about",
   },
   {
     id: 4,
@@ -35,6 +36,7 @@ const Navbar = ({ theme, setTheme }) => {
   const [showMenu, setShowMenu] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -60,9 +62,15 @@ const Navbar = ({ theme, setTheme }) => {
     try {
       await signOut(auth);
       setIsAdmin(false); // Reset admin status on logout
+      navigate("/"); // Redirect to home after logout
     } catch (error) {
       console.error("Logout error:", error);
     }
+  };
+
+  const handleNavigation = (path) => {
+    navigate(path);
+    setShowMenu(false); // Close mobile menu if open
   };
 
   return (
@@ -70,7 +78,12 @@ const Navbar = ({ theme, setTheme }) => {
       <div className="container py-3 md:py-0">
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-3xl font-bold font-serif">Urban Ease</h1>
+            <h1 
+              className="text-3xl font-bold font-serif cursor-pointer"
+              onClick={() => navigate("/")}
+            >
+              Urban Ease
+            </h1>
           </div>
           
           {/* Desktop Navigation */}
@@ -78,23 +91,23 @@ const Navbar = ({ theme, setTheme }) => {
             <ul className="flex items-center gap-8">
               {NavLinks.map((data) => (
                 <li key={data.id} className="py-4">
-                  <a
+                  <button
+                    onClick={() => handleNavigation(data.link)}
                     className="py-2 hover:border-b-2 hover:text-primary hover:border-primary transition-colors duration-500 text-lg font-medium"
-                    href={data.link}
                   >
                     {data.name}
-                  </a>
+                  </button>
                 </li>
               ))}
               {/* Add Admin link if user is admin */}
               {isAdmin && (
                 <li className="py-4">
-                  <a
+                  <button
+                    onClick={() => handleNavigation("/admin")}
                     className="py-2 hover:border-b-2 hover:text-primary hover:border-primary transition-colors duration-500 text-lg font-medium"
-                    href="/admin"
                   >
                     ADMIN
-                  </a>
+                  </button>
                 </li>
               )}
             </ul>
@@ -108,12 +121,12 @@ const Navbar = ({ theme, setTheme }) => {
                 LOGOUT
               </button>
             ) : (
-              <a
-                href="/login"
+              <button
+                onClick={() => handleNavigation("/login")}
                 className="py-2 hover:border-b-2 hover:text-primary hover:border-primary transition-colors duration-500 text-lg font-medium"
               >
                 LOGIN
-              </a>
+              </button>
             )}
             
             {/* Theme Toggle (Desktop) */}
@@ -167,13 +180,14 @@ const Navbar = ({ theme, setTheme }) => {
         </div>
       </div>
       
-      {/* Responsive Menu - Pass isAdmin prop */}
+      {/* Responsive Menu - Pass isAdmin prop and handleNavigation */}
       <ResponsiveMenu
         showMenu={showMenu}
         setShowMenu={setShowMenu}
         isLoggedIn={isLoggedIn}
         isAdmin={isAdmin}
         handleLogout={handleLogout}
+        handleNavigation={handleNavigation}
       />
     </nav>
   );

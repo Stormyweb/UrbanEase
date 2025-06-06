@@ -1,9 +1,11 @@
 import React, { useEffect, useRef } from "react";
 import { FaUserCircle } from "react-icons/fa";
 import { NavLinks } from "./Navbar";
+import { useNavigate } from "react-router-dom";
 
 const ResponsiveMenu = ({ showMenu, setShowMenu, isLoggedIn, isAdmin, handleLogout }) => {
   const menuRef = useRef(null);
+  const navigate = useNavigate();
 
   // Close menu when clicking outside
   useEffect(() => {
@@ -21,6 +23,11 @@ const ResponsiveMenu = ({ showMenu, setShowMenu, isLoggedIn, isAdmin, handleLogo
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [showMenu, setShowMenu]);
+
+  const handleNavigation = (path) => {
+    navigate(path);
+    setShowMenu(false);
+  };
 
   return (
     <div
@@ -45,26 +52,24 @@ const ResponsiveMenu = ({ showMenu, setShowMenu, isLoggedIn, isAdmin, handleLogo
           <ul className="space-y-6 text-lg">
             {NavLinks.map((data) => (
               <li key={data.id}>
-                <a
-                  href={data.link}
-                  className="block py-2 hover:text-primary transition-colors duration-300"
-                  onClick={() => setShowMenu(false)}
+                <button
+                  onClick={() => handleNavigation(data.link)}
+                  className="block py-2 hover:text-primary transition-colors duration-300 w-full text-left"
                 >
                   {data.name}
-                </a>
+                </button>
               </li>
             ))}
             
             {/* Admin Link - Only show if user is admin */}
             {isAdmin && (
               <li>
-                <a
-                  href="/admin"
-                  className="block py-2 hover:text-primary transition-colors duration-300"
-                  onClick={() => setShowMenu(false)}
+                <button
+                  onClick={() => handleNavigation("/admin")}
+                  className="block py-2 hover:text-primary transition-colors duration-300 w-full text-left"
                 >
                   ADMIN
-                </a>
+                </button>
               </li>
             )}
 
@@ -81,13 +86,12 @@ const ResponsiveMenu = ({ showMenu, setShowMenu, isLoggedIn, isAdmin, handleLogo
                   LOGOUT
                 </button>
               ) : (
-                <a
-                  href="/login"
-                  className="block py-2 hover:text-primary transition-colors duration-300"
-                  onClick={() => setShowMenu(false)}
+                <button
+                  onClick={() => handleNavigation("/login")}
+                  className="block py-2 hover:text-primary transition-colors duration-300 w-full text-left"
                 >
                   LOGIN
-                </a>
+                </button>
               )}
             </li>
           </ul>
@@ -98,7 +102,12 @@ const ResponsiveMenu = ({ showMenu, setShowMenu, isLoggedIn, isAdmin, handleLogo
       <div className="text-center text-sm">
         <p>
           Made with ❤ by{" StormyWeb "}
-          <a href="#" className="text-primary hover:underline">Urban Ease</a>
+          <button 
+            onClick={() => handleNavigation("#")}
+            className="text-primary hover:underline"
+          >
+            Urban Ease
+          </button>
         </p>
       </div>
     </div>
